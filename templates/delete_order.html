@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete order | Game Tickets{% endblock %}
+
+{% block content %}
+<div class="auth">
+    <div class="auth__card panel">
+        <h1>Delete this order?</h1>
+        <p class="lead">
+            {{ order.game.team1.name }} vs {{ order.game.team2.name }},
+            {{ order.count }} ticket{{ order.count|pluralize }}.
+            The tickets will go back on sale.
+        </p>
+        <form method="post" class="form-actions">
+            {% csrf_token %}
+            <button class="btn btn--danger btn--lg" type="submit">Yes, delete order</button>
+            <a class="btn btn--ghost" href="{% url 'show_orders' %}">No, keep it</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

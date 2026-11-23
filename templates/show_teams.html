@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Clubs | Game Tickets{% endblock %}
+
+{% block content %}
+<div class="container page-head">
+    <h1>Clubs</h1>
+    <p class="lead">Open a club to see its stadium, coach and games.</p>
+
+    <form class="toolbar toolbar--spaced" method="get" action="{% url 'show_teams' %}">
+        <div class="search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <label class="visually-hidden" for="q">Search a club</label>
+            <input class="input" id="q" type="search" name="q" value="{{ q }}" placeholder="Search a club">
+        </div>
+        <button class="btn btn--primary" type="submit">Search</button>
+        {% if q %}<a class="btn btn--ghost" href="{% url 'show_teams' %}">Clear</a>{% endif %}
+    </form>
+</div>
+
+<div class="container">
+    <div class="grid grid--clubs">
+        {% for team in teams %}
+            {% include 'partials/team_card.html' with team=team %}
+        {% empty %}
+        <div class="empty grid__full">
+            <h3>No clubs found</h3>
+            <p>Try another name.</p>
+            <a class="btn btn--primary" href="{% url 'show_teams' %}">Show all clubs</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

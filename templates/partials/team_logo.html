@@ -1,0 +1,6 @@
+{# Логотип клуба или серый квадрат со знаком «?». Параметры: team, cls (размер: logo--sm / logo--lg / logo--xl) #}
+{% if team.logo %}
+<img class="logo {{ cls }}" src="{{ team.logo.url }}" alt="{{ team.name }} logo" decoding="async">
+{% else %}
+<span class="logo logo--empty {{ cls }}" role="img" aria-label="No logo">?</span>
+{% endif %}

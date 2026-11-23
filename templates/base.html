@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Game Tickets{% endblock %}</title>
+
+    {# Шрифты: Barlow Condensed (заголовки) и Manrope (текст) #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {# current = имя текущего url, нужно чтобы подсветить пункт меню #}
+    {% with current=request.resolver_match.url_name %}
+    <header class="site-header">
+        <div class="container nav">
+            <a class="brand" href="{% url 'home' %}">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z"/>
+                    <path d="M14 6v12" stroke-dasharray="2 2.5"/>
+                </svg>
+                Game Tickets
+            </a>
+
+            {# Меню на телефоне: скрытый чекбокс + label, работает без JavaScript #}
+            <input class="nav__check visually-hidden" type="checkbox" id="nav-toggle" aria-label="Menu">
+            <label class="nav__toggle" for="nav-toggle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </label>
+
+            <div class="nav__menu" id="nav-menu">
+                <nav class="nav__links" aria-label="Main">
+                    <a href="{% url 'home' %}" {% if current == 'home' %}aria-current="page"{% endif %}>Home</a>
+                    <a href="{% url 'show_games' %}" {% if current == 'show_games' or current == 'show_game' %}aria-current="page"{% endif %}>Games</a>
+                    <a href="{% url 'show_teams' %}" {% if current == 'show_teams' or current == 'show_team' %}aria-current="page"{% endif %}>Clubs</a>
+                    {# «Мои заказы» видит только вошедший пользователь #}
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'show_orders' %}" {% if current == 'show_orders' %}aria-current="page"{% endif %}>My orders</a>
+                    {% endif %}
+                </nav>
+
+                <div class="nav__auth">
+                    {% if user.is_authenticated %}
+                        <span class="nav__user">{{ user.username }}</span>
+                        <a class="btn btn--ghost btn--sm" href="/logout">Log out</a>
+                    {% else %}
+                        <a class="btn btn--ghost btn--sm" href="{% url 'login' %}">Log in</a>
+                        <a class="btn btn--flash btn--sm" href="{% url 'registration' %}">Sign up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endwith %}
+
+    {# Сообщения Django (messages.error / messages.success) — показываются, только если они есть #}
+    {% if messages %}
+    <div class="container messages" role="status">
+        {% for message in messages %}
+        <div class="message {% if message.tags == 'error' %}message--error{% endif %}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <span>&copy; {% now "Y" %} Game Tickets</span>
+            <span>Find a game, pick your seats, book in a minute.</span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}My orders | Game Tickets{% endblock %}
+
+{% block content %}
+<div class="container page-head">
+    <h1>My orders</h1>
+    <p class="lead">Change the number of tickets or cancel an order any time.</p>
+</div>
+
+<div class="container">
+    <div class="orders">
+        {% for order in orders %}
+        <article class="order">
+            <div>
+                <div class="order__teams">
+                    {% include 'partials/team_logo.html' with team=order.game.team1 cls='logo--sm' %}
+                    <a href="{% url 'show_game' order.game.pk %}">{{ order.game.team1.name }}</a>
+                    <span class="muted">vs</span>
+                    {% include 'partials/team_logo.html' with team=order.game.team2 cls='logo--sm' %}
+                    <a href="{% url 'show_game' order.game.pk %}">{{ order.game.team2.name }}</a>
+                </div>
+                <p class="order__info">
+                    {{ order.game.date|date:"j M Y, H:i" }}, {{ order.game.stadium }}<br>
+                    Ordered on {{ order.created_at|date:"j M Y" }}
+                </p>
+            </div>
+
+            <div class="order__sum">
+                <small>{{ order.count }} ticket{{ order.count|pluralize }}</small>
+                {# order.total работает, если в модели Order добавлено свойство total (см. подсказки) #}
+                {% if order.total %}{% include 'partials/price.html' with value=order.total %}{% endif %}
+            </div>
+
+            <div class="order__actions">
+                <a class="btn btn--ghost btn--sm" href="{% url 'edit_order' order.pk %}">Edit</a>
+                <a class="btn btn--ghost btn--sm" href="{% url 'delete_order' order.pk %}">Delete</a>
+            </div>
+        </article>
+        {% empty %}
+        <div class="empty">
+            <h3>You don't have any orders yet</h3>
+            <p>Find a game and book your first tickets.</p>
+            <a class="btn btn--primary" href="{% url 'show_games' %}">Browse games</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

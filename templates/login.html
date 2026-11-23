@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Log in | Game Tickets{% endblock %}
+
+{% block content %}
+<div class="auth">
+    <div class="auth__card panel">
+        <h1>Log in</h1>
+        <p class="lead">Welcome back. Log in to book tickets and see your orders.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label for="username">Username</label>
+                <input class="input" id="username" type="text" name="username" autocomplete="username" required autofocus>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input class="input" id="password" type="password" name="password" autocomplete="current-password" required>
+            </div>
+            <button class="btn btn--primary btn--block btn--lg" type="submit">Log in</button>
+        </form>
+
+        <p class="auth__alt">No account yet? <a href="{% url 'registration' %}">Sign up</a></p>
+    </div>
+</div>
+{% endblock %}

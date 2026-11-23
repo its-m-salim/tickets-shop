@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Buy tickets | Game Tickets{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <a class="crumb" href="{% url 'show_game' game.pk %}">&larr; Back to the game</a>
+    <h1 class="page-title">Buy tickets</h1>
+
+    <div class="order-layout">
+        {# Что покупаем #}
+        <section class="panel order-summary">
+            <div class="matchup">
+                <div class="side">
+                    {% include 'partials/team_logo.html' with team=game.team1 cls='logo--lg' %}
+                    <span class="side__name">{{ game.team1.name }}</span>
+                </div>
+                <span class="score score--vs">vs</span>
+                <div class="side">
+                    {% include 'partials/team_logo.html' with team=game.team2 cls='logo--lg' %}
+                    <span class="side__name">{{ game.team2.name }}</span>
+                </div>
+            </div>
+            <dl class="facts">
+                <div><dt>Date and time</dt><dd>{{ game.date|date:"l, j F Y, H:i" }}</dd></div>
+                <div><dt>Stadium</dt><dd>{{ game.stadium }}</dd></div>
+                <div><dt>Price per ticket</dt><dd>{{ game.price|floatformat:"-2" }}</dd></div>
+                <div><dt>Tickets left</dt><dd>{{ game.tickets }}</dd></div>
+            </dl>
+        </section>
+
+        {# Форма #}
+        <section class="panel">
+            {% if game.tickets > 0 %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="count">Number of tickets</label>
+                    <input class="input" id="count" type="number" name="count" min="1" max="{{ game.tickets }}" value="1" required>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn--primary btn--lg" type="submit">Confirm order</button>
+                    <a class="btn btn--ghost" href="{% url 'show_game' game.pk %}">Cancel</a>
+                </div>
+            </form>
+            {% else %}
+            <div class="empty">
+                <h3>Sold out</h3>
+                <p>There are no tickets left for this game.</p>
+                <a class="btn btn--primary" href="{% url 'show_games' %}">Browse other games</a>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{# Карточка игры в виде билета. Параметр: game #}
+<article class="ticket">
+    <div class="ticket__inner">
+        <div class="ticket__media media">
+            {% include 'partials/media.html' with image=game.image alt=game.team1.name %}
+            <span class="badge badge--{{ game.status }}">{{ game.get_status_display }}</span>
+            <span class="tag">{{ game.category.name }}</span>
+        </div>
+
+        <div class="ticket__body">
+            <div class="matchup">
+                <div class="side">
+                    {% include 'partials/team_logo.html' with team=game.team1 cls='' %}
+                    <span class="side__name">{{ game.team1.name }}</span>
+                </div>
+                {% if game.status == 'not_started' %}
+                <span class="score score--vs">vs</span>
+                {% else %}
+                <span class="score">{{ game.score1 }} : {{ game.score2 }}</span>
+                {% endif %}
+                <div class="side">
+                    {% include 'partials/team_logo.html' with team=game.team2 cls='' %}
+                    <span class="side__name">{{ game.team2.name }}</span>
+                </div>
+            </div>
+            <p class="ticket__meta">
+                <strong>{{ game.date|date:"j M Y, H:i" }}</strong><br>
+                {{ game.stadium }}
+            </p>
+        </div>
+
+        <div class="ticket__stub">
+            <div>{% include 'partials/price.html' with value=game.price %}<span class="ticket__unit"> per ticket</span></div>
+            {% if game.tickets > 0 %}
+            <div class="ticket__left">{{ game.tickets }}<small>tickets left</small></div>
+            {% else %}
+            <div class="ticket__left ticket__left--out">Sold out</div>
+            {% endif %}
+        </div>
+
+        <a class="ticket__link" href="{% url 'show_game' game.pk %}" aria-label="{{ game.team1.name }} vs {{ game.team2.name }}"></a>
+    </div>
+</article>

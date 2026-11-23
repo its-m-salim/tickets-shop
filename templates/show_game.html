@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ game.team1.name }} vs {{ game.team2.name }} | Game Tickets{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a class="crumb" href="{% url 'show_games' %}">&larr; All games</a>
+
+    <section class="scoreboard">
+        <div class="scoreboard__top">
+            <span class="badge badge--{{ game.status }}">{{ game.get_status_display }}</span>
+            <span class="tag">{{ game.category.name }}</span>
+        </div>
+        <div class="matchup">
+            <a class="side" href="{% url 'show_team' game.team1.pk %}">
+                {% include 'partials/team_logo.html' with team=game.team1 cls='logo--xl' %}
+                <span class="side__name">{{ game.team1.name }}</span>
+            </a>
+            {% if game.status == 'not_started' %}
+            <span class="score score--vs">vs</span>
+            {% else %}
+            <span class="score">{{ game.score1 }} : {{ game.score2 }}</span>
+            {% endif %}
+            <a class="side" href="{% url 'show_team' game.team2.pk %}">
+                {% include 'partials/team_logo.html' with team=game.team2 cls='logo--xl' %}
+                <span class="side__name">{{ game.team2.name }}</span>
+            </a>
+        </div>
+    </section>
+
+    <div class="game-layout">
+        <div>
+            <div class="media">
+                {% if game.status == 'finished' and game.video %}
+                <video src="{{ game.video.url }}" controls preload="metadata"{% if game.image %} poster="{{ game.image.url }}"{% endif %}></video>
+                {% else %}
+                    {% include 'partials/media.html' with image=game.image alt=game.team1.name %}
+                {% endif %}
+            </div>
+
+            <h2>About the game</h2>
+            <p class="prose">{{ game.description }}</p>
+        </div>
+
+        <aside class="panel buy">
+            {% include 'partials/price.html' with value=game.price %}
+            <p class="price-note">per ticket</p>
+
+            <dl class="facts">
+                <div>
+                    <dt>Date and time</dt>
+                    <dd>{{ game.date|date:"l, j F Y" }}, {{ game.date|date:"H:i" }}</dd>
+                </div>
+                <div>
+                    <dt>Stadium</dt>
+                    <dd>{{ game.stadium }}</dd>
+                </div>
+                <div>
+                    <dt>Sport</dt>
+                    <dd>{{ game.category.name }}</dd>
+                </div>
+                <div>
+                    <dt>Tickets left</dt>
+                    <dd>{{ game.tickets }}</dd>
+                </div>
+            </dl>
+
+            {% if game.status == 'finished' %}
+                <span class="btn btn--ghost btn--block btn--disabled">Game is finished</span>
+            {% elif game.tickets <= 0 %}
+                <span class="btn btn--ghost btn--block btn--disabled">Sold out</span>
+            {% elif user.is_authenticated %}
+                <a class="btn btn--primary btn--block btn--lg" href="{% url 'create_order' game.pk %}">Buy ticket</a>
+            {% else %}
+                <a class="btn btn--primary btn--block btn--lg" href="{% url 'login' %}">Log in to buy</a>
+                <a class="btn btn--ghost btn--block" href="{% url 'registration' %}">Create account</a>
+                <p class="buy__note">You need an account to book tickets.</p>
+            {% endif %}
+        </aside>
+    </div>
+</div>
+{% endblock %}

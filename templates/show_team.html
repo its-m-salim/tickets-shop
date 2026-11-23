@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ team.name }} | Game Tickets{% endblock %}
+
+{% block content %}
+
+<section class="club-hero">
+    <div class="club-hero__cover">
+        {% include 'partials/media.html' with image=team.stadium_image alt=team.stadium %}
+    </div>
+    <div class="container club-hero__row">
+        <div class="club-hero__logo">
+            {% include 'partials/team_logo.html' with team=team cls='logo--xl' %}
+        </div>
+        <div class="club-hero__title">
+            <h1>{{ team.name }}</h1>
+            <p>Coach: {{ team.coach }}</p>
+        </div>
+        <a class="btn btn--primary" href="#games">See games</a>
+    </div>
+</section>
+
+<div class="container">
+    <a class="crumb" href="{% url 'show_teams' %}">&larr; All clubs</a>
+
+    <div class="club-layout">
+        <section>
+            <h2>About the club</h2>
+            <p class="prose">{{ team.description }}</p>
+        </section>
+
+        <aside class="panel">
+            <dl class="facts">
+                <div>
+                    <dt>Home stadium</dt>
+                    <dd>{{ team.stadium }}</dd>
+                </div>
+                <div>
+                    <dt>Head coach</dt>
+                    <dd>{{ team.coach }}</dd>
+                </div>
+                <div>
+                    <dt>On Game Tickets since</dt>
+                    <dd>{{ team.created_at|date:"F Y" }}</dd>
+                </div>
+            </dl>
+        </aside>
+    </div>
+
+    <h2 class="subhead" id="games">Games of {{ team.name }}</h2>
+    <div class="grid">
+        {% for game in games %}
+            {% include 'partials/game_card.html' with game=game %}
+        {% empty %}
+        <div class="empty grid__full">
+            <h3>No games yet</h3>
+            <p>Games of this club will appear here.</p>
+            <a class="btn btn--primary" href="{% url 'show_games' %}">Browse all games</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

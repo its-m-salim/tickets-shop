@@ -1,0 +1,6 @@
+{# Картинка или серая заглушка со знаком «?». Параметры: image, alt #}
+{% if image %}
+<img src="{{ image.url }}" alt="{{ alt }}" decoding="async">
+{% else %}
+<div class="ph" role="img" aria-label="No image"><span>?</span></div>
+{% endif %}

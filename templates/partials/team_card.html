@@ -1,0 +1,8 @@
+{# Карточка клуба: логотип, название, тренер. Вся карточка кликабельна. Параметр: team #}
+<article class="club">
+    <div class="club__logo">
+        {% include 'partials/team_logo.html' with team=team cls='logo--xl' %}
+    </div>
+    <h3 class="club__name"><a class="club__link" href="{% url 'show_team' team.pk %}">{{ team.name }}</a></h3>
+    <p class="club__coach">Coach: {{ team.coach }}</p>
+</article>
